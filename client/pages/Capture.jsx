@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Image, View, Platform } from 'react-native';
+import { Button, Image, View, Platform, Alert} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import * as firebase from 'firebase/app';
@@ -27,6 +27,7 @@ export default class ImagePickerExample extends React.Component {
   }
 
   componentDidMount() {
+    if (!firebase.apps.length) { firebase.initializeApp(ApiKeys.FirebaseConfig); }
     this.getPermissionAsync();
   }
 
@@ -46,18 +47,29 @@ export default class ImagePickerExample extends React.Component {
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
+        base64: true
       });
       if (!result.cancelled) {
         this.setState({ image: result.uri });
-        var mountainImagesRef = storage.ref().child('images/test.png');
-       
-        mountainImagesRef.putString(result.uri, 'data_url').then(snapshot => {
-          console.log('Uploaded a base64 string!', snapshot);
-        }).catch(err => console.log(err));
+        this.uploadImage(result.uri, "test-image")
+        .then(() => {
+          Alert.alert("Success");
+        })
+        .catch( (err) => {
+          Alert.alert(err)
+        })
       }
-      console.log(result);
+      
     } catch (E) {
       console.log(E);
     }
   };
+
+  uploadImage = async (uri, imageName) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    var ref = firebase.storage().ref().child("images/" + imageName);
+    return ref.put(blob);
+  }
 }
