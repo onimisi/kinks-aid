@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    fontSize: 20,
   },
   scan: {
     width: 100,
