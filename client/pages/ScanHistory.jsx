@@ -1,10 +1,10 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 
-export default function Results() {
+export default function ScanHistory() {
     return (
         <View>
-            <Text>Results page</Text>
+            <Text>Scan History</Text>
         </View>
     )
 }
