@@ -28,19 +28,7 @@ const HomeStackScreen = () => {
             borderColor:"red"
           }
     }}>
-      <HomeStack.Screen
-        name='Home'
-        component={Home}
-        // options={{
-        //   // title: "Kinks-Aid",
-        //   headerTitle: props => <LogoTitle {...props} />,
-        //   headerStyle: {
-        //     backgroundColor: "#FEDBD0",
-        //     borderBottomColor: "#882C2E",
-        //     borderColor:"red"
-        //   }
-        // }}
-      />
+      <HomeStack.Screen name='Home' component={Home}/>
       <HomeStack.Screen name='ScanHistory' component={ScanHistory} />
     </HomeStack.Navigator>
   );
