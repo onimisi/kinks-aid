@@ -22,23 +22,6 @@ app.use(cors({ origin: true }));
 main.use("/api/v1", app);
 main.use(express.json());
 
-app.get("/results", async (request, response) => {
-  try {
-    const resultsQuerySnapshot = await db.collection("Results").get();
-    const results = [];
-    resultsQuerySnapshot.forEach((doc) => {
-      results.push({
-        id: doc.id,
-        data: doc.data(),
-      });
-    });
-
-    response.status(200).json(results);
-  } catch (error) {
-    response.status(500).send(error);
-  }
-});
-
 app.post("/users", async (request, response) => {
   try {
     const { username, hairType, email } = request.body;
@@ -59,17 +42,35 @@ app.post("/users", async (request, response) => {
   }
 });
 
+app.get("/results", async (request, response) => {
+  try {
+    const resultsQuerySnapshot = await db.collection("Results").get();
+    const results = [];
+    resultsQuerySnapshot.forEach((doc) => {
+      results.push({
+        id: doc.id,
+        data: doc.data(),
+      });
+    });
+
+    response.status(200).json(results);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
 app.post("/results", async (request, response) => {
   try {
+    
     const { userId, element } = request.body;
     console.log("userId:=", userId, "elements:=", element)
     const data = {
       userId: userId,
       element: element
     };
-    console.log(data)
-    const resultsRef = await db.collection("Results").add(data);
-    const results = await resultsRef.get();
+    const resultRef = db.collection('Results').doc(userId);
+    await resultRef.set(data);
+    const results = await resultRef.get();
 
     response.status(201).json({
       post: "success",
@@ -79,6 +80,51 @@ app.post("/results", async (request, response) => {
   } catch (error) {
     response.status(500).send(error);
   }
+});
+
+app.patch("/results/:id", async (request, response) => {
+  console.log('here')
+  try {
+    const { elementsAdd } = request.body;
+    const userId = request.params.id
+
+    const resultRef = db.collection('Results').doc(userId);
+    await resultRef.update({
+      element: admin.firestore.FieldValue.arrayUnion(elementsAdd)
+    })
+    const results = await resultRef.get();
+
+    response.status(201).json({
+      post: "success",
+      id: results.id,
+      data: results.data()
+    });
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+app.get('/results/:id', async (request, response) => {
+  try {
+    const userId = request.params.id;
+
+    if (!userId) throw new Error('User ID is required');
+
+    const userResults = await db.collection('Results').doc(userId).get();
+
+    if (!userResults.exists){
+        throw new Error('Results doesnt exist for this user.')
+    }
+
+    response.status(200).json({
+      id: userResults.id,
+      data: userResults.data()
+    });
+
+  } catch(error){
+    response.status(500).send(error);
+  }
+
 });
 
 exports.capstoneApi = functions.https.onRequest(main);
@@ -98,7 +144,7 @@ exports.storageTrigger = functions.storage
       vals.push(text.description);
     });
 
-    axios.default.post('https://capstone-kinksaid.web.app/api/v1/results', {userId: "45he4", element: vals })
-    .then(res => console.log(res))
-    .catch(errr => console.error(err))
+    axios.default.post('https://capstone-kinksaid.web.app/api/v1/results', {userId: "oukanah", element: vals })
+    .then(res => console.log('sent'))
+    .catch(err => console.error('error:=', err))
   });
