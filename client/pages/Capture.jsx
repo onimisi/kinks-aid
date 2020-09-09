@@ -1,89 +1,137 @@
-import React, { useState } from 'react';
-import { Button, Image, Text, View, Platform, Alert, ActionSheetIOS, TouchableOpacity } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
-import  firebaseConfigured from '../firebase'
+import React, { useState, useEffect } from "react";
+import {
+  Button,
+  Image,
+  Text,
+  View,
+  ActionSheetIOS,
+  TouchableOpacity,
+  Alert
+} from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import * as Permissions from "expo-permissions";
+import * as axios from 'axios';
+import firebaseConfigured from "../firebase";
 
 var fStorage = firebaseConfigured.storage();
 
 const ImagePickerExample = ({ navigation }) => {
   const [image, setImage] = useState(undefined);
-  const [result, setResult] = useState('🔮')
 
-
-  const showAction = () =>
+  const showAction = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: ["Cancel", "Generate number", "Reset"],
-        destructiveButtonIndex: 2,
-        cancelButtonIndex: 0
+        options: ["Cancel", "Camera", "Gallery"],
+        cancelButtonIndex: 0,
       },
-      buttonIndex => {
+      (buttonIndex) => {
         if (buttonIndex === 0) {
-          // cancel action
         } else if (buttonIndex === 1) {
-          setResult(Math.floor(Math.random() * 100) , 1);
+          _takePhoto();
         } else if (buttonIndex === 2) {
-          setResult("🔮");
+          _pickImage();
         }
       }
     );
+  };
 
-    const getPermissionAsync = async () => {
-      if (Platform.OS !== 'web') {
-        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-        if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
-        }
-      }
-    };
-  
-    const _pickImage = async () => {
-      getPermissionAsync()
-      try {
-        let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
+  const _takePhoto = async () => {
+    try {
+      const { granted } = await Permissions.askAsync(Permissions.CAMERA);
+      if (granted) {
+        let result = await ImagePicker.launchCameraAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
           allowsEditing: true,
           aspect: [4, 3],
           quality: 1,
-          base64: true
         });
         if (!result.cancelled) {
           setImage(result.uri);
           uploadImage(result.uri, "test-image")
-          .then(() => {
-            Alert.alert("Success");
-          })
-          .catch( (err) => {
-            Alert.alert(err)
-          })
+            .then(() => {
+              Alert.alert("Success");
+            })
+            .catch((err) => {
+              Alert.alert(err);
+            });
         }
-        
-      } catch (E) {
-        console.log(E);
       }
-    };
-  
-    const uploadImage = async (uri, imageName) => {
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      var ref = fStorage.ref().child("images/" + imageName);
-      return ref.put(blob);
+    } catch (E) {
+      console.log(E);
     }
-    
+  };
 
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Button title="Pick an image from camera roll" onPress={_pickImage} />
-        {{image} && <Image source={{ uri: image }} style={{ width: 200, height: 200}} />}
-        <Text>{result}</Text>
-        <Button title="Results" onPress={() => navigation.navigate('Results')} />
-        <TouchableOpacity onPress={showAction}>
-          <Text> Show Ios Action </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+  const _pickImage = async () => {
+    try {
+      const { granted } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (granted) {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+        if (!result.cancelled) {
+          setImage(result.uri);
+          const randomNum = Math.floor(Math.random() * 60); 
+          const imageName = `test-image-${ randomNum.toString() }`
+          uploadImage(result.uri, imageName)
+            .then(() => {
+              
+              console.log('here')
+            })
+            .catch((err) => {
+              alert(err);
+            });
+        }
+      }
+    } catch (E) {
+      console.log(E);
+    }
+  };
+
+  const uploadImage = async (uri, imageName) => {
+    console.log(imageName);
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    var ref = fStorage.ref().child("images/" + imageName);
+    ref.put(blob);
+
+    const res = await axios.default({
+      url: 'https://capstone-kinksaid.web.app/api/v1/scan',
+      method: 'POST',
+      data: {
+        image: imageName,
+        userId: 'oukanah'
+      }
+    })
+    console.log("RESPONSE:=", res.data);
+
+    const updateResult = await axios.default({
+      url: 'https://capstone-kinksaid.web.app/api/v1/results',
+      method: 'POST',
+      data: {
+        userId: 'oukanah',
+        element: res.data
+      }
+    })
+    console.log(updateResult.data);
+    navigation.navigate('Results', {
+      detectedText: updateResult.data
+    });
+  };
+
+  return (
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <TouchableOpacity onPress={showAction}>
+        <Text> Pick an Image </Text>
+      </TouchableOpacity>
+      {{ image } && (
+        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+      )}
+      <Button title='Results' onPress={() => navigation.navigate("Results")} />
+    </View>
+  );
+};
 
 export default ImagePickerExample;
- 
