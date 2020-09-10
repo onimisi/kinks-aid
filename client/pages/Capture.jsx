@@ -76,13 +76,9 @@ const ImagePickerExample = ({ navigation }) => {
           const randomNum = Math.floor(Math.random() * 60); 
           const imageName = `test-image-${ randomNum.toString() }`
           uploadImage(result.uri, imageName)
-            .then(() => {
-              
-              console.log('here')
-            })
-            .catch((err) => {
+          .catch((err) => {
               alert(err);
-            });
+          });
         }
       }
     } catch (E) {
@@ -91,7 +87,6 @@ const ImagePickerExample = ({ navigation }) => {
   };
 
   const uploadImage = async (uri, imageName) => {
-    console.log(imageName);
     const response = await fetch(uri);
     const blob = await response.blob();
     var ref = fStorage.ref().child("images/" + imageName);
@@ -105,7 +100,6 @@ const ImagePickerExample = ({ navigation }) => {
         userId: 'oukanah'
       }
     })
-    console.log("RESPONSE:=", res.data);
 
     const updateResult = await axios.default({
       url: 'https://capstone-kinksaid.web.app/api/v1/results',
@@ -115,7 +109,6 @@ const ImagePickerExample = ({ navigation }) => {
         element: res.data
       }
     })
-    console.log(updateResult.data);
     navigation.navigate('Results', {
       detectedText: updateResult.data
     });

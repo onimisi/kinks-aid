@@ -37,7 +37,6 @@ app.post("/signUp", async (request, response) => {
       displayName: userName
     })
 
-    console.log("new user ID:=", newUser.uid);
     const userId = newUser.uid;
     const data = {
       userName,
@@ -125,7 +124,7 @@ app.get("/results", async (request, response) => {
 app.post("/results", async (request, response) => {
   try {
     const { userId, element } = request.body;
-    console.log("userId:=", userId, "elements:=", element);
+
     const data = {
       userId: userId,
       element: element,
@@ -147,15 +146,12 @@ app.post("/results", async (request, response) => {
 app.post("/scan", async (request, response) => {
   try {
     const { image, userId } = request.body;
-    console.log("imageName:=", image, "image user:=", userId);
     const client = new vision.ImageAnnotatorClient();
     
     const results = await client.textDetection(`gs://capstone-kinksaid.appspot.com/images/${image}`);
-
     const detections = results[0].textAnnotations.map((obj = { description }) => obj.description.toLowerCase().toString());
     const textArray = detections[0].match(/([a-zA-Z0-9][\s]*)+/g);
     const textDetected = trimArray(textArray);
-    console.log(textDetected);
 
     response.status(201).json({
       post: "success",
@@ -167,7 +163,6 @@ app.post("/scan", async (request, response) => {
 });
 
 app.patch("/results/:id", async (request, response) => {
-  console.log("here");
   try {
     const { elementsAdd } = request.body;
     const userId = request.params.id;
@@ -211,44 +206,20 @@ app.get("/results/:id", async (request, response) => {
 
 exports.capstoneApi = functions.https.onRequest(main);
 
-exports.storageTrigger = functions.storage
-  .object()
-  .onFinalize(async (object) => {
-    console.log("name: ", object.name, "bucket: ", object.bucket);
-    const [result] = await client.textDetection(
-      `gs://${object.bucket}/${object.name}`
-    );
-    const detections = result.textAnnotations;
-    console.log("Text:-->", detections[0].description);
-    let vals = [];
-    detections.forEach((text) => {
-      vals.push(text.description[0]);
-    });
+// http://localhost:5000/api/v1
+// https://capstone-kinksaid.web.app/api/v1/
 
-    // axios.default
-    //   .get("https://capstone-kinksaid.web.app/api/v1/results")
-    //   .then((res) => {
-    //     const found = res.data.find((userId) => userId.id === "oukanah");
-    //     console.log("RESPONSE", found);
-    //     return found;
-    //   })
-    //   .catch((err) => console.error("error:=", err));
-
-    // axios.default
+// axios.default
     //   .patch("https://capstone-kinksaid.web.app/api/v1/results/oukanah", {
     //     elementsAdd: [(elements = { vals })],
     //   })
-    //   .then((res) => console.log("SENT", res))
+    //   .then((res) => ())
     //   .catch((err) => console.error("error:=", err));
 
-    axios.default
-      .post("https://capstone-kinksaid.web.app/api/v1/results", {
-        userId: "oukanah",
-        element: [(elements = { vals })],
-      })
-      .then((res) => console.log("sent"))
-      .catch((err) => console.error("error:=", err));
-
-    // http://localhost:5000/api/v1
-    // https://capstone-kinksaid.web.app/api/v1/
-  });
+    // axios.default
+    //   .post("https://capstone-kinksaid.web.app/api/v1/results", {
+    //     userId: "oukanah",
+    //     element: [(elements = { vals })],
+    //   })
+    //   .then((res) => ())
+    //   .catch((err) => console.error("error:=", err));

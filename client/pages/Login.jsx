@@ -21,7 +21,6 @@ const Login = ({ navigation }) => {
         .auth()
         .signInWithEmailAndPassword(email, password);
       navigation.navigate("Home");
-      // console.log(response.user.uid);
     } catch (error) {
       console.log(error);
     }
