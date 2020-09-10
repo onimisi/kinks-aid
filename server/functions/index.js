@@ -40,19 +40,42 @@ app.post("/signUp", async (request, response) => {
     })
 
     console.log("new user ID:=", newUser.uid);
-
+    const userId = newUser.uid;
     const data = {
       userName,
       hairType,
-      userEmail
+      userEmail,
+      userId
     };
 
-    const usersRef = await db.collection("Users").add(data);
+    const usersRef = db.collection("Users").doc(userId);
+    await usersRef.set(data);
     const user = await usersRef.get();
 
     response.json({
-      id: usersRef.id,
+      id: user.id,
       data: user.data(),
+    });
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+app.get("/users/:id", async (request, response) => {
+  try {
+    const userId = request.params.id;
+
+    if (!userId) throw new Error("User ID is required");
+
+    const userData = await db.collection("Users").doc(userId).get();
+
+    if (!userData.exists) {
+      throw new Error("Results doesnt exist for this user.");
+    }
+
+    response.status(200).json({
+      id: userData.id,
+      data: userData.data(),
     });
   } catch (error) {
     response.status(500).send(error);

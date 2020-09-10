@@ -19,7 +19,7 @@ function Home(props) {
     console.log(markedDates);
   };
   return (
-    <ScrollView>
+    <ScrollView style={styles.container}>
       <View style={styles.mainView}>
         <View style={styles.goToPage}>
           <Text
@@ -102,6 +102,10 @@ function Home(props) {
 export default Home;
 
 const styles = StyleSheet.create({
+  container: {
+    borderTopColor: "#94675B",
+    borderTopWidth: 3
+  },
   mainView: {
     paddingVertical: 30,
     paddingHorizontal: 25,

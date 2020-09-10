@@ -1,41 +1,68 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
-  Button,
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Image,
 } from "react-native";
-import firebaseConfigured from "../firebase";
-import { Fontisto } from "@expo/vector-icons";
 
-const Login = ({ navigation }) => {
+import { Fontisto } from "@expo/vector-icons";
+import axios from "axios";
+import firebaseConfigured from '../firebase'
+
+export default function SignUp({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [fullName, setfullName] = useState("");
+  const [hairType, sethairType] = useState("");
+
+  const creatNewAccount = () => {
+    axios({
+      url: "https://capstone-kinksaid.web.app/api/v1/signUp",
+      method: "POST",
+      data: {
+        userEmail: email,
+        password: password,
+        userName: fullName,
+        hairType: hairType,
+      },
+    })
+      .then(() => {
+        signIn();
+      })
+      .catch((err) => console.log(err));
+  };
 
   const signIn = async () => {
     try {
       await firebaseConfigured
         .auth()
         .signInWithEmailAndPassword(email, password);
-      navigation.navigate("Home");
-      // console.log(response.user.uid);
+        navigation.navigate("Home");
     } catch (error) {
       console.log(error);
     }
   };
-
-  if(firebaseConfigured.auth().currentUser) {
-    navigation.navigate('Profile')
-  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>
         Kinks <Fontisto name='bandage' size={24} color='black' /> Aid
       </Text>
+      <TextInput
+        style={styles.inputBox}
+        value={fullName}
+        onChangeText={(fullName) => setfullName(fullName)}
+        placeholder='Full Name'
+      />
+      <TextInput
+        style={styles.inputBox}
+        value={hairType}
+        onChangeText={(hairType) => sethairType(hairType)}
+        placeholder='Hair Type'
+      />
       <TextInput
         style={styles.inputBox}
         value={email}
@@ -50,13 +77,19 @@ const Login = ({ navigation }) => {
         placeholder='Password'
         secureTextEntry={true}
       />
-      <TouchableOpacity onPress={signIn} style={styles.button}>
-        <Text style={styles.buttonText}>Login</Text>
+      <TextInput
+        style={styles.inputBox}
+        value={confirmPassword}
+        onChangeText={(confirmPassword) => setConfirmPassword(confirmPassword)}
+        placeholder='Confirm Password'
+        secureTextEntry={true}
+      />
+      <TouchableOpacity style={styles.button} onPress={creatNewAccount}>
+        <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
-      <Button title="Don't have an account yet? Sign up" onPress={() => navigation.navigate('SignUp')} />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -83,8 +116,8 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     alignItems: "center",
     backgroundColor: "#c2b280",
-    borderRadius: 20 ,
-    width: "70%"
+    borderRadius: 20,
+    width: "70%",
   },
   buttonText: {
     fontSize: 20,
@@ -95,5 +128,3 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
-
-export default Login;

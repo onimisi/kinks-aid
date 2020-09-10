@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
-  Button,
   Image,
   Text,
   View,
   ActionSheetIOS,
   TouchableOpacity,
+  StyleSheet,
   Alert
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
@@ -56,8 +56,8 @@ const ImagePickerExample = ({ navigation }) => {
             });
         }
       }
-    } catch (E) {
-      console.log(E);
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -122,16 +122,25 @@ const ImagePickerExample = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <View style={styles.pageContainer}>
       <TouchableOpacity onPress={showAction}>
         <Text> Pick an Image </Text>
       </TouchableOpacity>
       {{ image } && (
         <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
       )}
-      <Button title='Results' onPress={() => navigation.navigate("Results")} />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  pageContainer: {
+      borderTopColor: "#94675B",
+      borderTopWidth: 3,
+      flex: 1, 
+      alignItems: "center", 
+      justifyContent: "center",
+  },
+})
 
 export default ImagePickerExample;
