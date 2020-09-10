@@ -15,8 +15,6 @@ const db = admin.firestore();
 const app = express();
 const main = express();
 
-
-
 app.use(cors({ origin: true }));
 
 main.use("/api/v1", app);
@@ -83,7 +81,25 @@ app.get("/users/:id", async (request, response) => {
 });
 
 /* Ingredients End Points */
+app.get("/ingredients", async (request, response) => {
+  try {
+    const ingredientsQuerySnapshot = await db.collection("Ingredients").get();
 
+    const ingredientsList = [];
+    ingredientsQuerySnapshot.forEach((doc) => {
+      ingredientsList.push({
+        id: doc.id,
+        data: doc.data()
+      });
+    });
+
+    response.status(200).json({
+      data: ingredientsList
+    });
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
 
 /* Events End Points */
 
@@ -99,7 +115,6 @@ app.get("/results", async (request, response) => {
         data: doc.data()
       });
     });
-    console.log('here', results)
 
     response.status(200).json(results);
   } catch (error) {
