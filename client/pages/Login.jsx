@@ -27,7 +27,7 @@ const Login = ({ navigation }) => {
   };
 
   if(firebaseConfigured.auth().currentUser) {
-    navigation.navigate('Profile')
+    navigation.navigate('Profile');
   }
 
   return (
