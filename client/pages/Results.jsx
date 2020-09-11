@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, SectionList, Button, SafeAreaView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  SectionList,
+  Button,
+  SafeAreaView,
+  TouchableOpacity,
+} from "react-native";
 import axios from "axios";
 import IngredientList from "../components/IngredientList";
 import firebaseConfigured from "../firebase";
 
 export default function Results({ route, navigation }) {
-  const [results, setResults] = useState();
+  const { detectedText, productName, category } = route.params;
+  const [results, setResults] = useState(detectedText);
   const [ingredients, setIngredients] = useState();
   const [matches, setMatches] = useState([]);
-  const [user] = useState(firebaseConfigured.auth().currentUser)
-  const { detectedText, productName, category } = route.params;
+  const [user] = useState(firebaseConfigured.auth().currentUser);
 
   useEffect(() => {
     console.log(detectedText);
-    setResults(detectedText);
-
     axios
       .get("https://capstone-kinksaid.web.app/api/v1/ingredients")
       .then((res) => {
@@ -42,10 +49,9 @@ export default function Results({ route, navigation }) {
         });
         i++;
       }
-      if(user !== null) {
+      if (user !== null) {
         updateResults(newArr);
       }
-      
       setMatches(newArr);
     } else {
       return null;
@@ -85,14 +91,24 @@ export default function Results({ route, navigation }) {
     }
   };
 
+  if (matches.length <= 0) {
+    return (
+      <View style={styles.container}>
+        <Text>No matches found</Text>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <IngredientList data={matches} />
-      <TouchableOpacity style={styles.button} onPress={() => {
-        navigation.popToTop();
-        navigation.navigate('Home');
-        setMatches('');
-        setResults('');
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          navigation.popToTop();
+          navigation.navigate("Home");
+          setMatches("");
+          setResults("");
         }}>
         <Text style={styles.buttonText}>Done</Text>
       </TouchableOpacity>
@@ -106,19 +122,21 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    borderTopColor: "#94675B",
+    borderTopWidth: 1,
   },
   header: {
     marginTop: 15,
-    fontFamily: 'montserrat-bold',
+    fontFamily: "montserrat-bold",
   },
   button: {
     marginBottom: 20,
     paddingVertical: 5,
     alignItems: "center",
     backgroundColor: "#c2b280",
-    borderRadius: 20 ,
-    width: "50%"
+    borderRadius: 20,
+    width: "50%",
   },
   buttonText: {
     fontSize: 20,

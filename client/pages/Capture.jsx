@@ -6,8 +6,8 @@ import {
   ActionSheetIOS,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
@@ -20,6 +20,7 @@ const ImagePickerExample = ({ navigation }) => {
   const [image, setImage] = useState(undefined);
   const [productName, setProductName] = useState("");
   const [category, setCategory] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
 
   const showAction = () => {
     ActionSheetIOS.showActionSheetWithOptions(
@@ -50,7 +51,9 @@ const ImagePickerExample = ({ navigation }) => {
         });
         if (!result.cancelled) {
           setImage(result.uri);
-          uploadImage(result.uri, "test-image").catch(err => console.error(err));
+          uploadImage(result.uri, "test-image").catch((err) =>
+            console.error(err)
+          );
         }
       }
     } catch (e) {
@@ -72,7 +75,7 @@ const ImagePickerExample = ({ navigation }) => {
           setImage(result.uri);
           const randomNum = Math.floor(Math.random() * 60);
           const imageName = `test-image-${randomNum.toString()}`;
-          uploadImage(result.uri, imageName).catch(err => console.error(err));
+          uploadImage(result.uri, imageName).catch((err) => console.error(err));
         }
       }
     } catch (E) {
@@ -81,6 +84,7 @@ const ImagePickerExample = ({ navigation }) => {
   };
 
   const uploadImage = async (uri, imageName) => {
+    setIsLoading(true)
     const response = await fetch(uri);
     const blob = await response.blob();
     var ref = fStorage.ref().child("images/" + imageName);
@@ -93,18 +97,28 @@ const ImagePickerExample = ({ navigation }) => {
         image: imageName,
       },
     });
-    setImage(undefined);
-    setCategory('');
-    setProductName('');
-    navigation.push("Results", {
-      detectedText: res.data.data,
-      productName,
-      category
-    });
+    if (res) {
+      console.log(res.data.data);
+      setImage(undefined);
+      setCategory("");
+      setProductName("");
+      setIsLoading(false);
+      navigation.push("Results", {
+        detectedText: res.data.data,
+        productName,
+        category,
+      });
+    }
   };
 
   return (
     <View style={styles.pageContainer}>
+    { isLoading &&
+      <View style={styles.activityContainer}>
+        <ActivityIndicator color={"brown"} size='large' />
+        <Text style={{color: "#FFF", fontSize: 20}}> Analyzing... </Text>
+      </View>
+    }
       <Text>Product Name: </Text>
       <TextInput
         style={styles.inputBox}
@@ -136,6 +150,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderTopColor: "#94675B",
     borderTopWidth: 1,
+  },
+  activityContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1,
+    backgroundColor: '#050C0F58'
   },
   inputBox: {
     width: "85%",
