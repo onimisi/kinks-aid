@@ -138,6 +138,7 @@ const fetchFonts = () => {
   return Font.loadAsync({
     "montserrat-light": require("./assets/fonts/Montserrat-Light.ttf"),
     "montserrat-regular": require("./assets/fonts/Montserrat-Regular.ttf"),
+    "montserrat-medium": require("./assets/fonts/Montserrat-Medium.ttf"),
     "montserrat-bold": require("./assets/fonts/Montserrat-Bold.ttf"),
   });
 };

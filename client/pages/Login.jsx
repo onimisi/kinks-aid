@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Image,
 } from "react-native";
 import firebaseConfigured from "../firebase";
 import { Fontisto } from "@expo/vector-icons";
