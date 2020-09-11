@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Image,
 } from "react-native";
 import firebaseConfigured from "../firebase";
 import { Fontisto } from "@expo/vector-icons";
@@ -27,7 +26,7 @@ const Login = ({ navigation }) => {
   };
 
   if(firebaseConfigured.auth().currentUser) {
-    navigation.navigate('Profile')
+    navigation.navigate('Profile');
   }
 
   return (

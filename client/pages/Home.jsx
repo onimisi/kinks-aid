@@ -104,7 +104,7 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     borderTopColor: "#94675B",
-    borderTopWidth: 3
+    borderTopWidth: 1
   },
   mainView: {
     paddingVertical: 30,

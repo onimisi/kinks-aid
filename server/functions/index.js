@@ -111,7 +111,6 @@ app.get("/results", async (request, response) => {
     resultsQuerySnapshot.forEach((doc) => {
       results.push({
         id: doc.id,
-        data: doc.data()
       });
     });
 
@@ -126,8 +125,8 @@ app.post("/results", async (request, response) => {
     const { userId, element } = request.body;
 
     const data = {
-      userId: userId,
-      element: element,
+      userId,
+      element,
     };
     const resultRef = db.collection("Results").doc(userId);
     await resultRef.set(data);
@@ -145,10 +144,12 @@ app.post("/results", async (request, response) => {
 
 app.post("/scan", async (request, response) => {
   try {
-    const { image, userId } = request.body;
+    const { image } = request.body;
+    console.log('before client init');
     const client = new vision.ImageAnnotatorClient();
-    
+
     const results = await client.textDetection(`gs://capstone-kinksaid.appspot.com/images/${image}`);
+
     const detections = results[0].textAnnotations.map((obj = { description }) => obj.description.toLowerCase().toString());
     const textArray = detections[0].match(/([a-zA-Z0-9][\s]*)+/g);
     const textDetected = trimArray(textArray);
