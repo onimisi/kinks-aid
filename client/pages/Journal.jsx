@@ -1,42 +1,23 @@
-import React, { Component, useEffect, useState } from "react";
-import { Text, StyleSheet, View, TouchableWithoutFeedback } from "react-native";
-import { Calendar, CalendarList, Agenda } from "react-native-calendars";
+import React, { useEffect, useState } from "react";
+import { Text, StyleSheet, View } from "react-native";
+import { Calendar } from "react-native-calendars";
 import { format } from "date-fns";
-
 import MyModal from "../components/MyModal";
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
-import { ceil } from "react-native-reanimated";
 
 const formatDate = (date = new Date()) => format(date, "yyyy-MM-dd");
 
-const getMarkedDates = (dateString, appointments) => {
-  const markedDates = {};
-  // console.log(appointments);
-
-  markedDates[formatDate(dateString)] = { selected: true };
-
-  appointments.forEach((appointment) => {
-    const formattedDate = formatDate(new Date(appointment.data.date));
-    markedDates[formattedDate] = {
-      ...markedDates[formattedDate],
-      marked: true,
-    };
-  });
-
-  return markedDates;
-};
-
-const setNewDate = (year, month, day) => new Date(year, month - 1, day);
-
-const Journal = ({ navigation, route }) => {
+const Journal = ({ route }) => {
   const [selectedDay, setSelectedDay] = useState();
   const [showDetails, setShowDetails] = useState(false);
   const [dayDetails, setDayDetails] = useState(false);
   const [treatments, setTreatments] = useState([]);
+  const [marked, setMarked] = useState({})
 
   useEffect(() => {
+    console.log("reload")
     axios
       .get(`https://capstone-kinksaid.web.app/api/v1/event/oukanah`)
       .then((res) => {
@@ -46,6 +27,26 @@ const Journal = ({ navigation, route }) => {
       })
       .catch((err) => console.log(err));
   }, []);
+
+  const getMarkedDates = (dateString, appointments) => {
+    const markedDates = {};
+    console.log(dateString);
+
+    markedDates[formatDate(dateString)] = { selected: true };
+  
+    appointments.forEach((appointment) => {
+      const formattedDate = formatDate(new Date(appointment.data.date));
+      markedDates[formattedDate] = {
+        ...markedDates[formattedDate],
+        marked: true,
+      };
+    });
+
+    // getDayDetails(dateString)
+      // setMarked(markedDates)
+      // console.log("MARKED DATES:", marked);
+    return markedDates;
+  };
 
   const getDayDetails = (date) => {
     const details = treatments.find(
@@ -63,7 +64,7 @@ const Journal = ({ navigation, route }) => {
 
   if (route.params !== undefined && !selectedDay) {
     const { year, month, day } = route.params;
-    const newBase = setNewDate(year, month, day);
+    const newBase = new Date (year, (month-1), day);
     setSelectedDay(newBase);
     console.log(year, month, day);
   }
@@ -84,7 +85,7 @@ const Journal = ({ navigation, route }) => {
           selectedDayTextColor: "#166088",
         }}
         onDayPress={({ day, month, year }) => {
-          const newBase = setNewDate(year, month, day);
+          const newBase = new Date (year, (month-1), day);
           setSelectedDay(newBase);
           getMarkedDates(newBase, treatments);
           getDayDetails(newBase);
@@ -124,7 +125,7 @@ const Journal = ({ navigation, route }) => {
                       fontFamily: "montserrat-regular",
                       marginRight: 20,
                     }}
-                    key={index}>
+                    key={`${index}-${treatment.text}`}>
                     {treatment.text}
                   </Text>
                   <Ionicons

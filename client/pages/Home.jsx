@@ -1,19 +1,21 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { Text, StyleSheet, View, Button, Image } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from "react-native-calendars";
 import { ScrollView } from "react-native-gesture-handler";
+import RowProduct from '../components/RowProduct'
 import { format } from "date-fns";
+import axios from 'axios';
 
 const formatDate = (date = new Date()) => format(date, "yyyy-MM-dd");
 
 const getMarkedDates = (dateString, appointments) => {
   const markedDates = {};
-
+  // console.log(appointments);
   markedDates[formatDate(dateString)] = { selected: true };
 
   appointments.forEach((appointment) => {
-    const formattedDate = formatDate(new Date(appointment.date));
+    const formattedDate = formatDate(new Date(appointment.data.date));
     markedDates[formattedDate] = {
       ...markedDates[formattedDate],
       marked: true,
@@ -26,29 +28,37 @@ const getMarkedDates = (dateString, appointments) => {
 const setNewDate = ( year, month, day ) => new Date( year, month-1, day)
 
 function Home({ navigation }) {
-  const [selectDay, setSelectDay] = useState(new Date())
+  const [selectDay, setSelectDay] = useState(new Date());
+  const [treatments, setTreatments] = useState([]);
+  const [scans, setScans] = useState([])
 
-  const APPOINTMENTS = [
-    {
-      date: "2020-09-13T05:00:00.000Z",
-      title: "It's a past thing!",
-    },
-    {
-      date: "2020-09-15T05:00:00.000Z",
-      title: "It's a today thing!",
-    },
-    {
-      date: "2020-09-18T05:00:00.000Z",
-      title: "It's a future thing!",
-    },
-  ];
+  useEffect(() => {
+    axios
+      .get(`https://capstone-kinksaid.web.app/api/v1/event/oukanah`)
+      .then((res) => {
+        // console.log("RESPONSE:", res.data);
+        setTreatments(res.data);
+        getMarkedDates(selectDay, res.data);
+      })
+      .catch((err) => console.log(err));
+
+    axios
+    .get(`https://capstone-kinksaid.web.app/api/v1/results/QhiScQ1h5FXWEoBEOlqEFNPQClq1`)
+    .then(res => {
+      // console.log(res.data.data.element);
+      setScans(res.data.data.element.reverse())
+    })
+    .catch(err => console.log(err))
+  }, []);
   return (
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>
         <View style={styles.goToPage}>
           <Text
             style={styles.subHeader}
-            onPress={() => navigation.navigate("ScanHistory")}>
+            onPress={() => navigation.navigate("ScanHistory", {
+              products: scans
+            })}>
             Scan History
           </Text>
           <Ionicons
@@ -59,36 +69,13 @@ function Home({ navigation }) {
           />
         </View>
         <View style={styles.scanHistoryContainer}>
-          <View>
-            <Image
-              style={styles.scan}
-              source={{
-                uri:
-                  "https://static.dribbble.com/users/2272349/screenshots/11207743/media/2b75c8253c5485936d05894abc9e4b4d.jpg",
-              }}
-            />
-            <Text>Product 1</Text>
-          </View>
-          <View>
-            <Image
-              style={styles.scan}
-              source={{
-                uri:
-                  "https://3.bp.blogspot.com/-IdfbE8yIPO0/XVwTj9xtuJI/AAAAAAAGIA0/CkWQCaoKAXow4m2a1jaBbKURURT439HzwCLcBGAs/s1600/orea_1.jpg",
-              }}
-            />
-            <Text>Product 2</Text>
-          </View>
-          <View>
-            <Image
-              style={styles.scan}
-              source={{
-                uri:
-                  "https://designhooks.com/wp-content/uploads/2018/05/shampoo-bottle-packging-mockup.jpg",
-              }}
-            />
-            <Text>Product 3</Text>
-          </View>
+        {
+          scans &&
+          scans.slice(0,3).map((history, index) => {
+            {/* console.log(history) */}
+            return <RowProduct key={index} product={history} />
+          })
+        }
         </View>
 
         <View style={styles.goToPage}>
@@ -118,22 +105,17 @@ function Home({ navigation }) {
             selectedDayBackgroundColor: '#C0D6DF',
             selectedDayTextColor: '#166088',
           }}
-          // onDayPress={(date) => navigation.navigate("Journal", {
-          //   datePassed: date
-          // })}
-          
-          // onDayPress={({ dateString }) => getMarkedDates(dateString, APPOINTMENTS) }
           onDayPress={({ day, month, year}) => {
             const newBase = setNewDate( year, month, day)
             setSelectDay(newBase);
-            getMarkedDates(newBase, APPOINTMENTS);
+            getMarkedDates(newBase, treatments);
             navigation.navigate("Journal", {
               year,
               month,
               day
             })
           }}
-          markedDates={getMarkedDates(selectDay, APPOINTMENTS)}
+          markedDates={getMarkedDates(selectDay, treatments)}
         />
       </View>
     </ScrollView>
@@ -144,7 +126,7 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     borderTopColor: "#94675B",
-    borderTopWidth: 1,
+    borderTopWidth: 2,
   },
   mainView: {
     paddingVertical: 30,
@@ -154,12 +136,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-  },
-  scan: {
-    width: 100,
-    height: 150,
-    borderRadius: 10,
-    marginBottom: 15,
   },
   scanHistoryContainer: {
     display: "flex",
