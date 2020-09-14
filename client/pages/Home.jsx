@@ -1,30 +1,54 @@
 import React, { Component, useState } from "react";
 import { Text, StyleSheet, View, Button, Image } from "react-native";
-import { ScreenContainer } from "react-native-screens";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { Calendar, CalendarList, Agenda } from "react-native-calendars";
+import { Ionicons } from '@expo/vector-icons';
+import { Calendar } from "react-native-calendars";
 import { ScrollView } from "react-native-gesture-handler";
+import { format } from "date-fns";
 
-function Home(props) {
-  const [markedDates, setMarkedDates] = useState({});
+const formatDate = (date = new Date()) => format(date, "yyyy-MM-dd");
 
-  const markDate = (dateString) => {
-    setMarkedDates(
-      (markedDates[dateString] = {
-        selected: true,
-        selectedColor: "red",
-      })
-    );
+const getMarkedDates = (dateString, appointments) => {
+  const markedDates = {};
 
-    console.log(markedDates);
-  };
+  markedDates[formatDate(dateString)] = { selected: true };
+
+  appointments.forEach((appointment) => {
+    const formattedDate = formatDate(new Date(appointment.date));
+    markedDates[formattedDate] = {
+      ...markedDates[formattedDate],
+      marked: true,
+    };
+  });
+
+  return markedDates;
+};
+
+const setNewDate = ( year, month, day ) => new Date( year, month-1, day)
+
+function Home({ navigation }) {
+  const [selectDay, setSelectDay] = useState(new Date())
+
+  const APPOINTMENTS = [
+    {
+      date: "2020-09-13T05:00:00.000Z",
+      title: "It's a past thing!",
+    },
+    {
+      date: "2020-09-15T05:00:00.000Z",
+      title: "It's a today thing!",
+    },
+    {
+      date: "2020-09-18T05:00:00.000Z",
+      title: "It's a future thing!",
+    },
+  ];
   return (
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>
         <View style={styles.goToPage}>
           <Text
             style={styles.subHeader}
-            onPress={() => props.navigation.navigate("ScanHistory")}>
+            onPress={() => navigation.navigate("ScanHistory")}>
             Scan History
           </Text>
           <Ionicons
@@ -70,7 +94,8 @@ function Home(props) {
         <View style={styles.goToPage}>
           <Text
             style={styles.subHeader}
-            onPress={() => props.navigation.navigate("Journal")}>
+            onPress={() => navigation.navigate("Journal")}
+            >
             Journal
           </Text>
           <Ionicons
@@ -81,6 +106,7 @@ function Home(props) {
           />
         </View>
         <Calendar
+          current={formatDate(selectDay)}
           enableSwipeMonths={true}
           style={styles.calendar}
           theme={{
@@ -89,11 +115,25 @@ function Home(props) {
             textDisabledColor: "lightgrey",
             dayTextColor: "black",
             arrowColor: "#882C2E",
-            selectedDayBackgroundColor: "#FFFFFF",
-            selectedDayTextColor: "#ffffff",
+            selectedDayBackgroundColor: '#C0D6DF',
+            selectedDayTextColor: '#166088',
           }}
-          onDayPress={({ dateString }) => markDate(dateString)}
-          markedDates={markedDates}
+          // onDayPress={(date) => navigation.navigate("Journal", {
+          //   datePassed: date
+          // })}
+          
+          // onDayPress={({ dateString }) => getMarkedDates(dateString, APPOINTMENTS) }
+          onDayPress={({ day, month, year}) => {
+            const newBase = setNewDate( year, month, day)
+            setSelectDay(newBase);
+            getMarkedDates(newBase, APPOINTMENTS);
+            navigation.navigate("Journal", {
+              year,
+              month,
+              day
+            })
+          }}
+          markedDates={getMarkedDates(selectDay, APPOINTMENTS)}
         />
       </View>
     </ScrollView>
@@ -104,7 +144,7 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     borderTopColor: "#94675B",
-    borderTopWidth: 1
+    borderTopWidth: 1,
   },
   mainView: {
     paddingVertical: 30,
@@ -139,7 +179,6 @@ const styles = StyleSheet.create({
   calendar: {
     borderRadius: 10,
     borderColor: "gray",
-    height: 310,
     marginTop: 20,
   },
 });

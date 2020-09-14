@@ -16,7 +16,6 @@ import Journal from "./pages/Journal";
 import Capture from "./pages/Capture";
 import Results from "./pages/Results";
 import ScanHistory from "./pages/ScanHistory";
-import SignUp from "./pages/SignUp";
 
 const HomeStack = createStackNavigator();
 const CaptureStack = createStackNavigator();
@@ -37,6 +36,7 @@ const HomeStackScreen = () => {
       }}>
       <HomeStack.Screen name='Home' component={Home} />
       <HomeStack.Screen name='ScanHistory' component={ScanHistory} />
+      {/* <HomeStack.Screen name='Journal' component={Journal} /> */}
     </HomeStack.Navigator>
   );
 };
@@ -86,7 +86,7 @@ const AuthStackScreen = () => {
         },
       }}>
       <AuthStack.Screen name='Login' component={Login} />
-      <AuthStack.Screen name='SignUp' component={SignUp} />
+      <AuthStack.Screen name='SignUp' component={signUp} />
     </AuthStack.Navigator>
   );
 };

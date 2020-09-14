@@ -101,6 +101,55 @@ app.get("/ingredients", async (request, response) => {
 });
 
 /* Events End Points */
+app.post("/event", async (request, response) => {
+  try {
+    const { userId, date, treatments, notes } = request.body;
+
+    const data = {
+      date,
+      treatments,
+      notes,
+      userId,
+    };
+    const resultRef = db.collection("Events");
+    const test = await resultRef.add(data);
+    const results = await test.get();
+
+    response.status(201).json({
+      post: "success",
+      id: results.id,
+      data: results.data(),
+    });
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+app.get("/event/:id", async (request, response) => {
+  try {
+    console.log(request.params);
+    const userId = request.params.id
+    // const date = request.params.date
+
+    console.log(userId)
+
+    const resultRef = db.collection("Events");
+    const results = await resultRef.where('userId', '==' ,'oukanah').get()
+
+    // console.log(results)
+    const events = [];
+    results.forEach((doc) => {
+      events.push({
+        data: doc.data()
+      });
+    });
+
+    response.status(200).json(events);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
 
 
 /* Results End Points */
