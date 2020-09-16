@@ -9,12 +9,12 @@ import { Ionicons } from "@expo/vector-icons";
 
 const formatDate = (date = new Date()) => format(date, "yyyy-MM-dd");
 
-const Journal = ({ route }) => {
+const Journal = ({ route, navigation }) => {
   const [selectedDay, setSelectedDay] = useState();
   const [showDetails, setShowDetails] = useState(false);
   const [dayDetails, setDayDetails] = useState(false);
   const [treatments, setTreatments] = useState([]);
-  const [marked, setMarked] = useState({})
+  const [marked, setMarked] = useState({});
 
   useEffect(() => {
     console.log("reload")

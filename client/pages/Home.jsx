@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, StyleSheet, View, Button, Image } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from "react-native-calendars";
@@ -50,6 +50,7 @@ function Home({ navigation }) {
     })
     .catch(err => console.log(err))
   }, []);
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>

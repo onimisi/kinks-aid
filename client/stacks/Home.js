@@ -1,0 +1,28 @@
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import LogoTitle from '../components/LogoTitle';
+
+// Screens
+import Home from '../pages/Home';
+import ScanHistory from '../pages/ScanHistory';
+
+const HomeStack = createStackNavigator();
+
+const HomeStackScreen = () => {
+  return (
+    <HomeStack.Navigator
+      screenOptions={{
+        headerTitle: (props) => <LogoTitle {...props} />,
+        headerStyle: {
+          backgroundColor: "#DDCDBA",
+          borderBottomColor: "#882C2E",
+          borderColor: "red",
+        },
+      }}>
+      <HomeStack.Screen name='Home' component={Home} />
+      <HomeStack.Screen name='ScanHistory' component={ScanHistory} />
+    </HomeStack.Navigator>
+  );
+};
+
+export default HomeStackScreen;
