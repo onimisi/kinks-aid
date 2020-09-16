@@ -6,6 +6,7 @@ import MyModal from "../components/MyModal";
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
+import { screen, text } from '../styles/GlobalStyles';
 
 const formatDate = (date = new Date()) => format(date, "yyyy-MM-dd");
 
@@ -17,7 +18,7 @@ const Journal = ({ route, navigation }) => {
   const [marked, setMarked] = useState({});
 
   useEffect(() => {
-    console.log("reload")
+    console.log("reload");
     axios
       .get(`https://capstone-kinksaid.web.app/api/v1/event/oukanah`)
       .then((res) => {
@@ -33,7 +34,7 @@ const Journal = ({ route, navigation }) => {
     console.log(dateString);
 
     markedDates[formatDate(dateString)] = { selected: true };
-  
+
     appointments.forEach((appointment) => {
       const formattedDate = formatDate(new Date(appointment.data.date));
       markedDates[formattedDate] = {
@@ -43,8 +44,8 @@ const Journal = ({ route, navigation }) => {
     });
 
     // getDayDetails(dateString)
-      // setMarked(markedDates)
-      // console.log("MARKED DATES:", marked);
+    // setMarked(markedDates)
+    // console.log("MARKED DATES:", marked);
     return markedDates;
   };
 
@@ -64,28 +65,28 @@ const Journal = ({ route, navigation }) => {
 
   if (route.params !== undefined && !selectedDay) {
     const { year, month, day } = route.params;
-    const newBase = new Date (year, (month-1), day);
+    const newBase = new Date(year, month - 1, day);
     setSelectedDay(newBase);
     console.log(year, month, day);
   }
 
   return (
-    <ScrollView style={styles.pageContainer}>
+    <ScrollView style={screen.container}>
       <Calendar
         current={formatDate(selectedDay)}
         enableSwipeMonths={true}
         style={styles.calendar}
         theme={{
-          backgroundColor: "#E7E6F2",
-          calendarBackground: "#E7E6E9",
           textDisabledColor: "lightgrey",
           dayTextColor: "black",
-          arrowColor: "#882C2E",
-          selectedDayBackgroundColor: "#C0D6DF",
-          selectedDayTextColor: "#166088",
+          arrowColor: "#7d2a42",
+          selectedDayBackgroundColor: "#ffdccc",
+          selectedDayTextColor: "#7d2a42",
+          dotColor: "#fb6376",
+          selectedDotColor: "#fb6376",
         }}
         onDayPress={({ day, month, year }) => {
-          const newBase = new Date (year, (month-1), day);
+          const newBase = new Date(year, month - 1, day);
           setSelectedDay(newBase);
           getMarkedDates(newBase, treatments);
           getDayDetails(newBase);
@@ -110,15 +111,13 @@ const Journal = ({ route, navigation }) => {
                 <View
                   style={{
                     backgroundColor: "#FFC0CB80",
-                    // borderColor: "#882C2E",
                     borderRadius: 8,
                     borderWidth: 1,
                     padding: 4,
                     display: "flex",
                     flexDirection: "row",
-                    // justifyContent: "center",
                     alignItems: "center",
-                    marginVertical: 5
+                    marginVertical: 5,
                   }}>
                   <Text
                     style={{
@@ -136,7 +135,9 @@ const Journal = ({ route, navigation }) => {
                 </View>
               ))}
             </View>
-            <Text style={{ fontFamily: "montserrat-light", fontSize: 20 }}>Notes:</Text>
+            <Text style={{ fontFamily: "montserrat-light", fontSize: 20 }}>
+              Notes:
+            </Text>
             <View
               style={{
                 padding: 20,
@@ -161,11 +162,8 @@ const Journal = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   pageContainer: {
-    borderTopColor: "#94675B",
-    borderTopWidth: 1,
     flex: 1,
     padding: 25,
-    backgroundColor: "#E7E6E9",
   },
   calendar: {
     borderRadius: 10,

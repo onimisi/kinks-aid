@@ -13,6 +13,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 import * as axios from "axios";
 import firebaseConfigured from "../firebase";
+import { screen, text } from '../styles/GlobalStyles';
 
 var fStorage = firebaseConfigured.storage();
 
@@ -112,7 +113,7 @@ const ImagePickerExample = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.pageContainer}>
+    <View style={[screen.container, styles.pageContainer]}>
     { isLoading &&
       <View style={styles.activityContainer}>
         <ActivityIndicator color={"brown"} size='large' />
@@ -148,8 +149,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderTopColor: "#94675B",
-    borderTopWidth: 1,
   },
   activityContainer: {
     position: 'absolute',

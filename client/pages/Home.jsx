@@ -6,6 +6,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import RowProduct from '../components/RowProduct'
 import { format } from "date-fns";
 import axios from 'axios';
+import { screen, text } from '../styles/GlobalStyles';
 
 const formatDate = (date = new Date()) => format(date, "yyyy-MM-dd");
 
@@ -52,11 +53,10 @@ function Home({ navigation }) {
   }, []);
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.mainView}>
+    <ScrollView style={screen.container}>
         <View style={styles.goToPage}>
           <Text
-            style={styles.subHeader}
+            style={[text.header, styles.gotToHeader]}
             onPress={() => navigation.navigate("ScanHistory", {
               products: scans
             })}>
@@ -65,8 +65,8 @@ function Home({ navigation }) {
           <Ionicons
             style={styles.arrowIcon}
             name='ios-arrow-forward'
-            size={22}
-            color='#882C2E'
+            size={23}
+            color='#7d2a42'
           />
         </View>
         <View style={styles.scanHistoryContainer}>
@@ -81,7 +81,7 @@ function Home({ navigation }) {
 
         <View style={styles.goToPage}>
           <Text
-            style={styles.subHeader}
+            style={text.header}
             onPress={() => navigation.navigate("Journal")}
             >
             Journal
@@ -89,8 +89,8 @@ function Home({ navigation }) {
           <Ionicons
             style={styles.arrowIcon}
             name='ios-arrow-forward'
-            size={22}
-            color='#882C2E'
+            size={23}
+            color='#7d2a42'
           />
         </View>
         <Calendar
@@ -98,45 +98,36 @@ function Home({ navigation }) {
           enableSwipeMonths={true}
           style={styles.calendar}
           theme={{
-            backgroundColor: "#E7E6F2",
-            calendarBackground: "#E7E6E9",
             textDisabledColor: "lightgrey",
             dayTextColor: "black",
-            arrowColor: "#882C2E",
-            selectedDayBackgroundColor: '#C0D6DF',
-            selectedDayTextColor: '#166088',
+            arrowColor: "#7d2a42",
+            selectedDayBackgroundColor: '#ffdccc',
+            selectedDayTextColor: '#7d2a42',
+            dotColor: '#fb6376',
+            selectedDotColor: '#fb6376',
           }}
           onDayPress={({ day, month, year}) => {
             const newBase = setNewDate( year, month, day)
             setSelectDay(newBase);
             getMarkedDates(newBase, treatments);
-            navigation.navigate("Journal", {
-              year,
-              month,
-              day
-            })
           }}
           markedDates={getMarkedDates(selectDay, treatments)}
         />
-      </View>
     </ScrollView>
   );
 }
 export default Home;
 
 const styles = StyleSheet.create({
-  container: {
-    borderTopColor: "#94675B",
-    borderTopWidth: 2,
-  },
-  mainView: {
-    paddingVertical: 30,
-    paddingHorizontal: 25,
-  },
   goToPage: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: '#7d2a42',
+  },
+  gotToHeader:{
+    marginBottom: 8,
   },
   scanHistoryContainer: {
     display: "flex",
@@ -145,17 +136,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginVertical: 20,
   },
-  subHeader: {
-    fontSize: 25,
-    marginRight: 15,
-    fontFamily: "montserrat-regular",
-  },
   arrowIcon: {
-    marginTop: 5,
+    marginTop: 7,
+    marginBottom: 8
   },
   calendar: {
     borderRadius: 10,
     borderColor: "gray",
-    marginTop: 20,
+    marginTop: 5,
   },
 });

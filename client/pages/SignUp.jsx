@@ -10,6 +10,7 @@ import {
 import { Fontisto } from "@expo/vector-icons";
 import axios from "axios";
 import firebaseConfigured from '../firebase'
+import { screen, text } from '../styles/GlobalStyles';
 
 export default function SignUp({ navigation }) {
   const [email, setEmail] = useState("");
@@ -47,7 +48,7 @@ export default function SignUp({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[screen.container, styles.container]}>
       <Text style={styles.headerText}>
         Kinks <Fontisto name='bandage' size={24} color='black' /> Aid
       </Text>
@@ -96,8 +97,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderTopColor: "#94675B",
-    borderTopWidth: 3,
   },
   inputBox: {
     width: "85%",
