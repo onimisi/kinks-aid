@@ -127,16 +127,11 @@ app.post("/event", async (request, response) => {
 
 app.get("/event/:id", async (request, response) => {
   try {
-    console.log(request.params);
     const userId = request.params.id
-    // const date = request.params.date
-
-    console.log(userId)
 
     const resultRef = db.collection("Events");
     const results = await resultRef.where('userId', '==' ,'oukanah').get()
 
-    // console.log(results)
     const events = [];
     results.forEach((doc) => {
       events.push({
@@ -194,7 +189,7 @@ app.post("/results", async (request, response) => {
 app.post("/scan", async (request, response) => {
   try {
     const { image } = request.body;
-    console.log('before client init');
+
     const client = new vision.ImageAnnotatorClient();
 
     const results = await client.textDetection(`gs://capstone-kinksaid.appspot.com/images/${image}`);
@@ -255,21 +250,3 @@ app.get("/results/:id", async (request, response) => {
 });
 
 exports.capstoneApi = functions.https.onRequest(main);
-
-// http://localhost:5000/api/v1
-// https://capstone-kinksaid.web.app/api/v1/
-
-// axios.default
-    //   .patch("https://capstone-kinksaid.web.app/api/v1/results/oukanah", {
-    //     elementsAdd: [(elements = { vals })],
-    //   })
-    //   .then((res) => ())
-    //   .catch((err) => console.error("error:=", err));
-
-    // axios.default
-    //   .post("https://capstone-kinksaid.web.app/api/v1/results", {
-    //     userId: "oukanah",
-    //     element: [(elements = { vals })],
-    //   })
-    //   .then((res) => ())
-    //   .catch((err) => console.error("error:=", err));

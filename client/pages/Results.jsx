@@ -2,16 +2,14 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  FlatList,
   StyleSheet,
-  SectionList,
-  Button,
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
 import axios from "axios";
 import IngredientList from "../components/IngredientList";
 import firebaseConfigured from "../firebase";
+import { text, button } from '../styles/GlobalStyles';
 
 export default function Results({ route, navigation }) {
   const { detectedText, productName, category } = route.params;
@@ -21,7 +19,6 @@ export default function Results({ route, navigation }) {
   const [user] = useState(firebaseConfigured.auth().currentUser);
 
   useEffect(() => {
-    console.log(detectedText);
     axios
       .get("https://capstone-kinksaid.web.app/api/v1/ingredients")
       .then((res) => {
@@ -37,7 +34,6 @@ export default function Results({ route, navigation }) {
   }, []);
 
   const performCompare = (ingList, resList) => {
-    console.log(ingList.length, resList.length);
     if (ingList) {
       let i = 0;
       let newArr = [];
@@ -68,7 +64,6 @@ export default function Results({ route, navigation }) {
     });
 
     if (found) {
-      console.log("am i patching?");
       await axios({
         url: `https://capstone-kinksaid.web.app/api/v1/results/${found.id}`,
         method: "PATCH",
@@ -76,9 +71,7 @@ export default function Results({ route, navigation }) {
           elementsAdd: { matched, productName, category },
         },
       });
-      // console.log("Existing Users Scan", patchResult.data.data);
     } else {
-      console.log("am i updating?");
       await axios({
         url: "https://capstone-kinksaid.web.app/api/v1/results",
         method: "POST",
@@ -87,7 +80,6 @@ export default function Results({ route, navigation }) {
           element: { matched, productName, category },
         },
       });
-      // console.log("New User Scan", updateResult.data.data);
     }
   };
 
@@ -100,17 +92,17 @@ export default function Results({ route, navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <IngredientList data={matches} />
+    <SafeAreaView style={styles.Pagecontainer}>
+    <IngredientList data={matches} />
       <TouchableOpacity
-        style={styles.button}
+        style={button.primary}
         onPress={() => {
           navigation.popToTop();
           navigation.navigate("Home");
           setMatches("");
           setResults("");
         }}>
-        <Text style={styles.buttonText}>Done</Text>
+        <Text style={text.buttonText}>Done</Text>
       </TouchableOpacity>
       {/*{user !== 'guest'? <Button title="save" />: <Button title="Login to save" />} */}
     </SafeAreaView>
@@ -118,13 +110,11 @@ export default function Results({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  Pagecontainer: {
     flex: 1,
-    padding: 20,
     justifyContent: "center",
     alignItems: "center",
-    borderTopColor: "#94675B",
-    borderTopWidth: 1,
+    backgroundColor: "#FFFFFF"
   },
   header: {
     marginTop: 15,

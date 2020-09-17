@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import firebaseConfigured from "../firebase";
 import { Fontisto } from "@expo/vector-icons";
+import { screen, text } from '../styles/GlobalStyles';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -21,7 +22,7 @@ const Login = ({ navigation }) => {
         .signInWithEmailAndPassword(email, password);
       navigation.navigate("Home");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -30,7 +31,7 @@ const Login = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[screen.container, styles.container]}>
       <Text style={styles.headerText}>
         Kinks <Fontisto name='bandage' size={24} color='black' /> Aid
       </Text>
@@ -61,8 +62,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderTopColor: "#94675B",
-    borderTopWidth: 3,
   },
   inputBox: {
     width: "85%",

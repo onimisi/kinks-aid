@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useFocusEffect } from '@react-navigation/native'
 import { Text, StyleSheet, View, Button, Image } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from "react-native-calendars";
@@ -6,12 +7,12 @@ import { ScrollView } from "react-native-gesture-handler";
 import RowProduct from '../components/RowProduct'
 import { format } from "date-fns";
 import axios from 'axios';
+import { screen, text } from '../styles/GlobalStyles';
 
 const formatDate = (date = new Date()) => format(date, "yyyy-MM-dd");
 
 const getMarkedDates = (dateString, appointments) => {
   const markedDates = {};
-  // console.log(appointments);
   markedDates[formatDate(dateString)] = { selected: true };
 
   appointments.forEach((appointment) => {
@@ -30,33 +31,41 @@ const setNewDate = ( year, month, day ) => new Date( year, month-1, day)
 function Home({ navigation }) {
   const [selectDay, setSelectDay] = useState(new Date());
   const [treatments, setTreatments] = useState([]);
-  const [scans, setScans] = useState([])
+  const [scans, setScans] = useState([]);
 
-  useEffect(() => {
+  useFocusEffect(
+    React.useCallback(() => {
+      // Do something when the screen is focused
+      getTreatmentEvents();
+      getScanResults();
+    }, [])
+  );
+
+
+  const getTreatmentEvents = () => {
     axios
-      .get(`https://capstone-kinksaid.web.app/api/v1/event/oukanah`)
-      .then((res) => {
-        // console.log("RESPONSE:", res.data);
-        setTreatments(res.data);
-        getMarkedDates(selectDay, res.data);
-      })
-      .catch((err) => console.log(err));
+    .get(`https://capstone-kinksaid.web.app/api/v1/event/oukanah`)
+    .then((res) => {
+      setTreatments(res.data);
+      getMarkedDates(selectDay, res.data);
+    })
+    .catch((err) => console.error(err));
+  }
 
+  const getScanResults = () => {
     axios
     .get(`https://capstone-kinksaid.web.app/api/v1/results/QhiScQ1h5FXWEoBEOlqEFNPQClq1`)
     .then(res => {
-      // console.log(res.data.data.element);
       setScans(res.data.data.element.reverse())
     })
-    .catch(err => console.log(err))
-  }, []);
+    .catch(err => console.error(err))
+  }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.mainView}>
+    <ScrollView style={screen.container}>
         <View style={styles.goToPage}>
           <Text
-            style={styles.subHeader}
+            style={[text.header, styles.gotToHeader]}
             onPress={() => navigation.navigate("ScanHistory", {
               products: scans
             })}>
@@ -65,15 +74,14 @@ function Home({ navigation }) {
           <Ionicons
             style={styles.arrowIcon}
             name='ios-arrow-forward'
-            size={22}
-            color='#882C2E'
+            size={23}
+            color='#7d2a42'
           />
         </View>
         <View style={styles.scanHistoryContainer}>
         {
           scans &&
           scans.slice(0,3).map((history, index) => {
-            {/* console.log(history) */}
             return <RowProduct key={index} product={history} />
           })
         }
@@ -81,7 +89,7 @@ function Home({ navigation }) {
 
         <View style={styles.goToPage}>
           <Text
-            style={styles.subHeader}
+            style={text.header}
             onPress={() => navigation.navigate("Journal")}
             >
             Journal
@@ -89,8 +97,8 @@ function Home({ navigation }) {
           <Ionicons
             style={styles.arrowIcon}
             name='ios-arrow-forward'
-            size={22}
-            color='#882C2E'
+            size={23}
+            color='#7d2a42'
           />
         </View>
         <Calendar
@@ -98,45 +106,36 @@ function Home({ navigation }) {
           enableSwipeMonths={true}
           style={styles.calendar}
           theme={{
-            backgroundColor: "#E7E6F2",
-            calendarBackground: "#E7E6E9",
             textDisabledColor: "lightgrey",
             dayTextColor: "black",
-            arrowColor: "#882C2E",
-            selectedDayBackgroundColor: '#C0D6DF',
-            selectedDayTextColor: '#166088',
+            arrowColor: "#7d2a42",
+            selectedDayBackgroundColor: '#ffdccc',
+            selectedDayTextColor: '#7d2a42',
+            dotColor: '#fb6376',
+            selectedDotColor: '#fb6376',
           }}
           onDayPress={({ day, month, year}) => {
             const newBase = setNewDate( year, month, day)
             setSelectDay(newBase);
             getMarkedDates(newBase, treatments);
-            navigation.navigate("Journal", {
-              year,
-              month,
-              day
-            })
           }}
           markedDates={getMarkedDates(selectDay, treatments)}
         />
-      </View>
     </ScrollView>
   );
 }
 export default Home;
 
 const styles = StyleSheet.create({
-  container: {
-    borderTopColor: "#94675B",
-    borderTopWidth: 2,
-  },
-  mainView: {
-    paddingVertical: 30,
-    paddingHorizontal: 25,
-  },
   goToPage: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: '#7d2a42',
+  },
+  gotToHeader:{
+    marginBottom: 8,
   },
   scanHistoryContainer: {
     display: "flex",
@@ -145,17 +144,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginVertical: 20,
   },
-  subHeader: {
-    fontSize: 25,
-    marginRight: 15,
-    fontFamily: "montserrat-regular",
-  },
   arrowIcon: {
-    marginTop: 5,
+    marginTop: 7,
+    marginBottom: 8
   },
   calendar: {
     borderRadius: 10,
     borderColor: "gray",
-    marginTop: 20,
+    marginTop: 5,
   },
 });

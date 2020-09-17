@@ -14,9 +14,9 @@ const CaptureStackScreen = () => {
       screenOptions={{
         headerTitle: (props) => <LogoTitle {...props} />,
         headerStyle: {
-          backgroundColor: "#DDCDBA",
-          borderBottomColor: "#882C2E",
-          borderColor: "red",
+            backgroundColor: "#ffdccc",
+          borderBottomColor: "#7d2a42",
+          borderBottomWidth: 1,
         },
       }}>
       <CaptureStack.Screen name='Capture' component={Capture} />

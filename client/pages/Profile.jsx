@@ -2,13 +2,12 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  Button,
   StyleSheet,
   TouchableOpacity,
-  input,
 } from "react-native";
 import firebaseConfigured from "../firebase";
 import axios from "axios";
+import { screen, text } from '../styles/GlobalStyles';
 
 export default function Profile({ navigation }) {
   const [user, setUser] = useState();
@@ -18,7 +17,7 @@ export default function Profile({ navigation }) {
       firebaseConfigured.auth().signOut();
       navigation.navigate("Home");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -30,14 +29,14 @@ export default function Profile({ navigation }) {
         .then((res) => {
           setUser(res);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     }
   }, []);
 
   if(!user) return null
 
   return (
-    <View style={styles.container}>
+    <View style={[screen.container, styles.container]}>
       <Text>Profile</Text>
       <Text>UserName: {user.data.data.userName} </Text>
       <Text>email: {user.data.data.userEmail} </Text>
@@ -56,8 +55,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderTopColor: "#94675B",
-    borderTopWidth: 3,
   },
   inputBox: {
     width: "85%",
