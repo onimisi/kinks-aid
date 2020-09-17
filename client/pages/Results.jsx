@@ -19,7 +19,6 @@ export default function Results({ route, navigation }) {
   const [user] = useState(firebaseConfigured.auth().currentUser);
 
   useEffect(() => {
-    console.log(detectedText);
     axios
       .get("https://capstone-kinksaid.web.app/api/v1/ingredients")
       .then((res) => {
@@ -35,7 +34,6 @@ export default function Results({ route, navigation }) {
   }, []);
 
   const performCompare = (ingList, resList) => {
-    console.log(ingList.length, resList.length);
     if (ingList) {
       let i = 0;
       let newArr = [];
@@ -66,7 +64,6 @@ export default function Results({ route, navigation }) {
     });
 
     if (found) {
-      console.log("am i patching?");
       await axios({
         url: `https://capstone-kinksaid.web.app/api/v1/results/${found.id}`,
         method: "PATCH",
@@ -74,9 +71,7 @@ export default function Results({ route, navigation }) {
           elementsAdd: { matched, productName, category },
         },
       });
-      // console.log("Existing Users Scan", patchResult.data.data);
     } else {
-      console.log("am i updating?");
       await axios({
         url: "https://capstone-kinksaid.web.app/api/v1/results",
         method: "POST",
@@ -85,7 +80,6 @@ export default function Results({ route, navigation }) {
           element: { matched, productName, category },
         },
       });
-      // console.log("New User Scan", updateResult.data.data);
     }
   };
 

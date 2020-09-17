@@ -13,7 +13,6 @@ const formatDate = (date = new Date()) => format(date, "yyyy-MM-dd");
 
 const getMarkedDates = (dateString, appointments) => {
   const markedDates = {};
-  // console.log(appointments);
   markedDates[formatDate(dateString)] = { selected: true };
 
   appointments.forEach((appointment) => {
@@ -42,29 +41,24 @@ function Home({ navigation }) {
     }, [])
   );
 
-  // useEffect(() => {
-    
-  // }, []);
 
   const getTreatmentEvents = () => {
     axios
     .get(`https://capstone-kinksaid.web.app/api/v1/event/oukanah`)
     .then((res) => {
-      // console.log("RESPONSE:", res.data);
       setTreatments(res.data);
       getMarkedDates(selectDay, res.data);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.error(err));
   }
 
   const getScanResults = () => {
     axios
     .get(`https://capstone-kinksaid.web.app/api/v1/results/QhiScQ1h5FXWEoBEOlqEFNPQClq1`)
     .then(res => {
-      // console.log(res.data.data.element);
       setScans(res.data.data.element.reverse())
     })
-    .catch(err => console.log(err))
+    .catch(err => console.error(err))
   }
 
   return (
@@ -88,7 +82,6 @@ function Home({ navigation }) {
         {
           scans &&
           scans.slice(0,3).map((history, index) => {
-            {/* console.log(history) */}
             return <RowProduct key={index} product={history} />
           })
         }

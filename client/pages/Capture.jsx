@@ -58,7 +58,7 @@ const ImagePickerExample = ({ navigation }) => {
         }
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 
@@ -79,8 +79,8 @@ const ImagePickerExample = ({ navigation }) => {
           uploadImage(result.uri, imageName).catch((err) => console.error(err));
         }
       }
-    } catch (E) {
-      console.log(E);
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -99,7 +99,6 @@ const ImagePickerExample = ({ navigation }) => {
       },
     });
     if (res) {
-      console.log(res.data.data);
       navigation.push("Results", {
         detectedText: res.data.data,
         productName,

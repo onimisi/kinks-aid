@@ -22,7 +22,7 @@ const Login = ({ navigation }) => {
         .signInWithEmailAndPassword(email, password);
       navigation.navigate("Home");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

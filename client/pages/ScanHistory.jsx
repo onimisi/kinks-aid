@@ -4,10 +4,7 @@ import ColumnProduct from '../components/ColumnProduct'
 
 export default function ScanHistory({ route }) {
 
-    // console.log(route);
-
     const { products } = route.params;
-    // const test = products.reverse();
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.subHeader}>History</Text>

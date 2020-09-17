@@ -75,7 +75,6 @@ class ModalForm extends Component {
 
   //function to console the output
   getValues = () => {
-    console.log("Data", this.state.inputData);
     this.props.submitData(this.state.inputData, this.state.notes);
     this.props.closeModal();
   };

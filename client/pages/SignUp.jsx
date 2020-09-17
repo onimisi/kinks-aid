@@ -33,7 +33,7 @@ export default function SignUp({ navigation }) {
       .then(() => {
         signIn();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   };
 
   const signIn = async () => {
@@ -43,7 +43,7 @@ export default function SignUp({ navigation }) {
         .signInWithEmailAndPassword(email, password);
         navigation.navigate("Home");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

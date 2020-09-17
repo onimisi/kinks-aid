@@ -25,16 +25,14 @@ const Journal = ({ route, navigation }) => {
     axios
       .get(`https://capstone-kinksaid.web.app/api/v1/event/oukanah`)
       .then((res) => {
-        // console.log("RESPONSE:", res.data);
         setTreatments(res.data);
         getMarkedDates(selectedDay, res.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   };
 
   const getMarkedDates = (dateString, appointments) => {
     const markedDates = {};
-    console.log(dateString);
 
     markedDates[formatDate(dateString)] = { selected: true };
 
@@ -46,9 +44,6 @@ const Journal = ({ route, navigation }) => {
       };
     });
 
-    // getDayDetails(dateString)
-    // setMarked(markedDates)
-    // console.log("MARKED DATES:", marked);
     return markedDates;
   };
 
@@ -71,7 +66,6 @@ const Journal = ({ route, navigation }) => {
     const { year, month, day } = route.params;
     const newBase = new Date(year, month - 1, day);
     setSelectedDay(newBase);
-    console.log(year, month, day);
   }
 
   return (

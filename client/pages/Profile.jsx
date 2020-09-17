@@ -17,7 +17,7 @@ export default function Profile({ navigation }) {
       firebaseConfigured.auth().signOut();
       navigation.navigate("Home");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -29,7 +29,7 @@ export default function Profile({ navigation }) {
         .then((res) => {
           setUser(res);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     }
   }, []);
 
