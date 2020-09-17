@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import {
   TextInput,
-  TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 

@@ -25,6 +25,7 @@ export default function MyModal(props) {
     })
 
     console.log(event.data.data)
+    props.events();
   }
 
   const closeModal = () => {

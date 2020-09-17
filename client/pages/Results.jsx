@@ -2,16 +2,14 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  FlatList,
   StyleSheet,
-  SectionList,
-  Button,
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
 import axios from "axios";
 import IngredientList from "../components/IngredientList";
 import firebaseConfigured from "../firebase";
+import { text, button } from '../styles/GlobalStyles';
 
 export default function Results({ route, navigation }) {
   const { detectedText, productName, category } = route.params;
@@ -100,17 +98,17 @@ export default function Results({ route, navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <IngredientList data={matches} />
+    <SafeAreaView style={styles.Pagecontainer}>
+    <IngredientList data={matches} />
       <TouchableOpacity
-        style={styles.button}
+        style={button.primary}
         onPress={() => {
           navigation.popToTop();
           navigation.navigate("Home");
           setMatches("");
           setResults("");
         }}>
-        <Text style={styles.buttonText}>Done</Text>
+        <Text style={text.buttonText}>Done</Text>
       </TouchableOpacity>
       {/*{user !== 'guest'? <Button title="save" />: <Button title="Login to save" />} */}
     </SafeAreaView>
@@ -118,13 +116,11 @@ export default function Results({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  Pagecontainer: {
     flex: 1,
-    padding: 20,
     justifyContent: "center",
     alignItems: "center",
-    borderTopColor: "#94675B",
-    borderTopWidth: 1,
+    backgroundColor: "#FFFFFF"
   },
   header: {
     marginTop: 15,

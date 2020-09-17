@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useFocusEffect } from '@react-navigation/native'
 import { Text, StyleSheet, View, Button, Image } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from "react-native-calendars";
@@ -31,18 +32,32 @@ const setNewDate = ( year, month, day ) => new Date( year, month-1, day)
 function Home({ navigation }) {
   const [selectDay, setSelectDay] = useState(new Date());
   const [treatments, setTreatments] = useState([]);
-  const [scans, setScans] = useState([])
+  const [scans, setScans] = useState([]);
 
-  useEffect(() => {
+  useFocusEffect(
+    React.useCallback(() => {
+      // Do something when the screen is focused
+      getTreatmentEvents();
+      getScanResults();
+    }, [])
+  );
+
+  // useEffect(() => {
+    
+  // }, []);
+
+  const getTreatmentEvents = () => {
     axios
-      .get(`https://capstone-kinksaid.web.app/api/v1/event/oukanah`)
-      .then((res) => {
-        // console.log("RESPONSE:", res.data);
-        setTreatments(res.data);
-        getMarkedDates(selectDay, res.data);
-      })
-      .catch((err) => console.log(err));
+    .get(`https://capstone-kinksaid.web.app/api/v1/event/oukanah`)
+    .then((res) => {
+      // console.log("RESPONSE:", res.data);
+      setTreatments(res.data);
+      getMarkedDates(selectDay, res.data);
+    })
+    .catch((err) => console.log(err));
+  }
 
+  const getScanResults = () => {
     axios
     .get(`https://capstone-kinksaid.web.app/api/v1/results/QhiScQ1h5FXWEoBEOlqEFNPQClq1`)
     .then(res => {
@@ -50,7 +65,7 @@ function Home({ navigation }) {
       setScans(res.data.data.element.reverse())
     })
     .catch(err => console.log(err))
-  }, []);
+  }
 
   return (
     <ScrollView style={screen.container}>

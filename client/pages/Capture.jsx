@@ -13,7 +13,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 import * as axios from "axios";
 import firebaseConfigured from "../firebase";
-import { screen, text } from '../styles/GlobalStyles';
+import { screen, text, form, button } from '../styles/GlobalStyles';
 
 var fStorage = firebaseConfigured.storage();
 
@@ -100,15 +100,15 @@ const ImagePickerExample = ({ navigation }) => {
     });
     if (res) {
       console.log(res.data.data);
-      setImage(undefined);
-      setCategory("");
-      setProductName("");
-      setIsLoading(false);
       navigation.push("Results", {
         detectedText: res.data.data,
         productName,
         category,
       });
+      setImage(undefined);
+      setCategory("");
+      setProductName("");
+      setIsLoading(false);
     }
   };
 
@@ -120,22 +120,22 @@ const ImagePickerExample = ({ navigation }) => {
         <Text style={{color: "#FFF", fontSize: 20}}> Analyzing... </Text>
       </View>
     }
-      <Text>Product Name: </Text>
+      <Text style={text.inputLabel}>Product Name</Text>
       <TextInput
-        style={styles.inputBox}
+        style={form.input}
         value={productName}
         onChangeText={(product) => setProductName(product)}
-        placeholder='Product Name'
+        placeholder='E.g. Shea Moisture...'
       />
-      <Text>Category: </Text>
+      <Text style={text.inputLabel}>Category</Text>
       <TextInput
-        style={styles.inputBox}
+        style={form.input}
         value={category}
         onChangeText={(category) => setCategory(category)}
-        placeholder='category'
+        placeholder='E.g. shampoo...'
       />
-      <TouchableOpacity style={styles.buttonPrimary} onPress={showAction}>
-        <Text style={styles.buttonText}> Scan a List </Text>
+      <TouchableOpacity style={button.primary} onPress={showAction}>
+        <Text style={text.buttonText}> Scan List </Text>
       </TouchableOpacity>
       {{ image } && (
         <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
@@ -160,32 +160,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 1,
     backgroundColor: '#050C0F58'
-  },
-  inputBox: {
-    width: "85%",
-    margin: 10,
-    padding: 15,
-    fontSize: 16,
-    borderColor: "#d3d3d3",
-    borderWidth: 1,
-    borderRadius: 10,
-    textAlign: "center",
-    backgroundColor: "#fff",
-  },
-  buttonPrimary: {
-    marginTop: 30,
-    marginBottom: 20,
-    paddingVertical: 5,
-    alignItems: "center",
-    backgroundColor: "#c2b280",
-    borderRadius: 20,
-    width: "70%",
-  },
-  buttonText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#fff",
-  },
+  },  
 });
 
 export default ImagePickerExample;

@@ -6,7 +6,7 @@ import MyModal from "../components/MyModal";
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
-import { screen, text } from '../styles/GlobalStyles';
+import { screen, text } from "../styles/GlobalStyles";
 
 const formatDate = (date = new Date()) => format(date, "yyyy-MM-dd");
 
@@ -18,7 +18,10 @@ const Journal = ({ route, navigation }) => {
   const [marked, setMarked] = useState({});
 
   useEffect(() => {
-    console.log("reload");
+    getCalendarEvents();
+  }, []);
+
+  const getCalendarEvents = () => {
     axios
       .get(`https://capstone-kinksaid.web.app/api/v1/event/oukanah`)
       .then((res) => {
@@ -27,7 +30,7 @@ const Journal = ({ route, navigation }) => {
         getMarkedDates(selectedDay, res.data);
       })
       .catch((err) => console.log(err));
-  }, []);
+  };
 
   const getMarkedDates = (dateString, appointments) => {
     const markedDates = {};
@@ -50,6 +53,7 @@ const Journal = ({ route, navigation }) => {
   };
 
   const getDayDetails = (date) => {
+    ("details?")
     const details = treatments.find(
       (treatment) =>
         formatDate(new Date(treatment.data.date)) === formatDate(date)
@@ -94,7 +98,7 @@ const Journal = ({ route, navigation }) => {
         markedDates={getMarkedDates(selectedDay, treatments)}
       />
       {showDetails && (
-        <MyModal date={format(selectedDay, "dd-MM-yyyy")} day={selectedDay} />
+        <MyModal date={format(selectedDay, "dd-MM-yyyy")} day={selectedDay} events={getCalendarEvents} />
       )}
       <View>
         {dayDetails && (
@@ -109,6 +113,7 @@ const Journal = ({ route, navigation }) => {
               }}>
               {dayDetails.data.treatments.map((treatment, index) => (
                 <View
+                  key={index}
                   style={{
                     backgroundColor: "#FFC0CB80",
                     borderRadius: 8,
