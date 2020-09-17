@@ -104,7 +104,7 @@ export default function Results({ route, navigation }) {
         }}>
         <Text style={text.buttonText}>Done</Text>
       </TouchableOpacity>
-      {/*{user !== 'guest'? <Button title="save" />: <Button title="Login to save" />} */}
+      {/*{user !== 'guest'? <Button title="save" />: <Button title="Login to save" />} // add a save button later */} 
     </SafeAreaView>
   );
 }

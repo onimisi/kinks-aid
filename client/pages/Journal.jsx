@@ -7,6 +7,7 @@ import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import { screen, text } from "../styles/GlobalStyles";
+import firebaseConfigured from "../firebase";
 
 const formatDate = (date = new Date()) => format(date, "yyyy-MM-dd");
 
@@ -15,20 +16,22 @@ const Journal = ({ route, navigation }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [dayDetails, setDayDetails] = useState(false);
   const [treatments, setTreatments] = useState([]);
-  const [marked, setMarked] = useState({});
+  const [user] = useState(firebaseConfigured.auth().currentUser);
 
   useEffect(() => {
     getCalendarEvents();
   }, []);
 
   const getCalendarEvents = () => {
-    axios
+    if(user) {
+      axios
       .get(`https://capstone-kinksaid.web.app/api/v1/event/oukanah`)
       .then((res) => {
         setTreatments(res.data);
         getMarkedDates(selectedDay, res.data);
       })
       .catch((err) => console.error(err));
+    }
   };
 
   const getMarkedDates = (dateString, appointments) => {

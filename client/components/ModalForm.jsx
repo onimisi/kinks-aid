@@ -27,7 +27,7 @@ class ModalForm extends Component {
 
   //function to add TextInput dynamically
   addTextInput = (index) => {
-    if(index === 5) return
+    if (index === 5) return;
     let textInput = this.state.textInput;
     textInput.push(
       <TextInput
@@ -81,56 +81,54 @@ class ModalForm extends Component {
 
   render() {
     return (
-    //   <DismissKeyboard>
-        <View style={styles.container}>
-          <TextInput
-            style={styles.inputBox}
-            placeholder='Date'
-            value={this.props.date}
-            autoCapitalize='none'
-            editable={false}
-          />
-          <View style={styles.row}>
-            <View style={{ margin: 10 }}>
-              <Button
-                title='+'
-                onPress={() => this.addTextInput(this.state.textInput.length)}
-              />
-            </View>
-            <View style={{ margin: 10 }}>
-              <Button title='-' onPress={() => this.removeTextInput()} />
-            </View>
-          </View>
-          {this.state.textInput.map((value) => {
-            return value;
-          })}
-          <View>
-            <Text>Notes:</Text>
-            <TextInput
-              style={styles.textarea}
-              placeholder='Additional Notes'
-              value={this.state.notes}
-              onChangeText={(notes) => this.setState({ notes })}
-              autoCapitalize='none'
-              multiline={true}
+      <View style={styles.container}>
+        <TextInput
+          style={styles.inputBox}
+          placeholder='Date'
+          value={this.props.date}
+          autoCapitalize='none'
+          editable={false}
+        />
+        <View style={styles.row}>
+          <View style={{ margin: 10 }}>
+            <Button
+              title='+'
+              onPress={() => this.addTextInput(this.state.textInput.length)}
             />
           </View>
-          <TouchableHighlight
-            style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-            onPress={() => {
-              this.getValues();
-            }}>
-            <Text style={styles.textStyle}>Save</Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            style={{ ...styles.openButton, backgroundColor: "#FF000070" }}
-            onPress={() => {
-              this.props.closeModal();
-            }}>
-            <Text style={styles.textStyle}>Cancel</Text>
-          </TouchableHighlight>
+          <View style={{ margin: 10 }}>
+            <Button title='-' onPress={() => this.removeTextInput()} />
+          </View>
         </View>
-    //   </DismissKeyboard>
+        {this.state.textInput.map((value) => {
+          return value;
+        })}
+        <View>
+          <Text>Notes:</Text>
+          <TextInput
+            style={styles.textarea}
+            placeholder='Additional Notes'
+            value={this.state.notes}
+            onChangeText={(notes) => this.setState({ notes })}
+            autoCapitalize='none'
+            multiline={true}
+          />
+        </View>
+        <TouchableHighlight
+          style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+          onPress={() => {
+            this.getValues();
+          }}>
+          <Text style={styles.textStyle}>Save</Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={{ ...styles.openButton, backgroundColor: "#FF000070" }}
+          onPress={() => {
+            this.props.closeModal();
+          }}>
+          <Text style={styles.textStyle}>Cancel</Text>
+        </TouchableHighlight>
+      </View>
     );
   }
 }
@@ -138,12 +136,7 @@ class ModalForm extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
   },
-  // buttonView: {
-  // flexDirection: 'row'
-  // },
   inputBox: {
     margin: 10,
     padding: 15,

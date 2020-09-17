@@ -6,30 +6,32 @@ import {
   TouchableHighlight,
   StyleSheet,
 } from "react-native";
+import firebaseConfigured from '../firebase'
 import ModalForm from "./ModalForm";
-import axios from 'axios';
+import axios from "axios";
 
 export default function MyModal(props) {
   const [modalVisible, setModalVisible] = useState(false);
-  
+  const currUser = firebaseConfigured.auth().currentUser;
+
   const submitData = async (dataPassedUp, notes) => {
-    const event = await axios({
-        url: "https://capstone-kinksaid.web.app/api/v1/event",
-        method: "POST",
-        data: {
-            date: props.day,
-            treatments: dataPassedUp,
-            userId: "oukanah",
-            notes
-        }
-    })
+    await axios({
+      url: "https://capstone-kinksaid.web.app/api/v1/event",
+      method: "POST",
+      data: {
+        date: props.day,
+        treatments: dataPassedUp,
+        userId: "oukanah",
+        notes,
+      },
+    });
 
     props.events();
-  }
+  };
 
   const closeModal = () => {
     setModalVisible(false);
-  }
+  };
 
   return (
     <View>
@@ -43,7 +45,11 @@ export default function MyModal(props) {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Add Treatments</Text>
-            <ModalForm date={props.date} closeModal={closeModal} submitData={submitData} />
+            <ModalForm
+              date={props.date}
+              closeModal={closeModal}
+              submitData={submitData}
+            />
           </View>
         </View>
       </Modal>
@@ -70,8 +76,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
-    // alignItems: "center",
-    // justifyContent: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
     width: "70%",
-    alignSelf: "center"
+    alignSelf: "center",
   },
   textStyle: {
     color: "white",
@@ -97,8 +101,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   modalText: {
-    // marginBottom: 10,
     textAlign: "center",
     fontSize: 40,
-  }
+  },
 });

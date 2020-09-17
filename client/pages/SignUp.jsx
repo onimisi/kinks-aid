@@ -9,8 +9,8 @@ import {
 
 import { Fontisto } from "@expo/vector-icons";
 import axios from "axios";
-import firebaseConfigured from '../firebase'
-import { screen, text } from '../styles/GlobalStyles';
+import firebaseConfigured from '../firebase';
+import { screen } from '../styles/GlobalStyles';
 
 export default function SignUp({ navigation }) {
   const [email, setEmail] = useState("");

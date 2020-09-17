@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import firebaseConfigured from "../firebase";
 import { Fontisto } from "@expo/vector-icons";
-import { screen, text } from '../styles/GlobalStyles';
+import { screen } from '../styles/GlobalStyles';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");

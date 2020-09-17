@@ -1,7 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList, SafeAreaView } from "react-native";
+import { StyleSheet, FlatList } from "react-native";
 import IngerdientCard from "./IngredientCard";
-import { List } from "react-native-paper";
 
 export default function IngredientList({ data }) {
   return (

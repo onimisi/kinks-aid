@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import firebaseConfigured from "../firebase";
 import axios from "axios";
-import { screen, text } from '../styles/GlobalStyles';
+import { screen } from '../styles/GlobalStyles';
 
 export default function Profile({ navigation }) {
   const [user, setUser] = useState();

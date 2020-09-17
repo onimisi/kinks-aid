@@ -130,7 +130,7 @@ app.get("/event/:id", async (request, response) => {
     const userId = request.params.id
 
     const resultRef = db.collection("Events");
-    const results = await resultRef.where('userId', '==' ,'oukanah').get()
+    const results = await resultRef.where('userId', '==' , userId).get()
 
     const events = [];
     results.forEach((doc) => {

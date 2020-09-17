@@ -23,6 +23,7 @@ const ImagePickerExample = ({ navigation }) => {
   const [category, setCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false)
 
+  // display actions screen to ask for image library or camer photo
   const showAction = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
@@ -40,6 +41,7 @@ const ImagePickerExample = ({ navigation }) => {
     );
   };
 
+  // Handle camera permissions and picture taking
   const _takePhoto = async () => {
     try {
       const { granted } = await Permissions.askAsync(Permissions.CAMERA);
@@ -62,6 +64,7 @@ const ImagePickerExample = ({ navigation }) => {
     }
   };
 
+  // Handle photo library permissions and image picking
   const _pickImage = async () => {
     try {
       const { granted } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -84,12 +87,13 @@ const ImagePickerExample = ({ navigation }) => {
     }
   };
 
+  // Handle image upload
   const uploadImage = async (uri, imageName) => {
     setIsLoading(true)
     const response = await fetch(uri);
     const blob = await response.blob();
-    var ref = fStorage.ref().child("images/" + imageName);
-    ref.put(blob);
+    var ref = fStorage.ref().child("images/" + imageName); // set a ref to images directory in cloud storage
+    ref.put(blob); // upload image to firebase storage
 
     const res = await axios.default({
       url: "https://capstone-kinksaid.web.app/api/v1/scan",
