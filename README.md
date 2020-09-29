@@ -3,6 +3,8 @@
 ## Description
 Kinks-aid is a mobile app dedicated to helping kinky/curly hair users stay informaed about the ingredients in their haircare products, it also helps them keep track of their haircare journey in a journal.
 
+...Images of app
+
 ## :heavy_check_mark: Features
 - Scan Ingredient lists of products
 - Sign-up & Login
