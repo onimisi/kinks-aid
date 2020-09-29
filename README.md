@@ -19,12 +19,13 @@ Kinks-aid is a mobile app dedicated to helping kinky/curly hair users stay infor
 
 ## :sos: Known Issues
 - Google Vision API doesn't always pick up all the ingredients due to the shape of the bottles
-- Database is limited in ingredients
+- ingredients database is limited
 
 ## :clock3: Coming Soon
 - More robust database of ingredients
 - Update Firbase to use MySQL DB since there is relational data
+- Allow modification or deletion of calendar events and scans
 - Text highlighting like google translate
-- Dropdown menus for tratemnts
+- Dropdown menus for tratemnts - adding a dropdown menu so users don't always have to enter the same treatment twice, there could be a custom list of treatemnts that users can edit
 - Page animations
-- Authorizations
+- Screen authorization, hide certain things to non-logged in users
